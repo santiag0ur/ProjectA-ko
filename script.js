@@ -4,16 +4,15 @@ const context = canvas.getContext('2d');
 const game = new Game(canvas, 'Me', 'Peter', 'Mary');
 game.distributeCards();
 game.drawPlayerCards();
-//debugger;
 game.randomPlayer();
 setTimeout(()=>{
     game.clearScreen();
-},1000 / 30);
+},1000 / 480);
+game.enableControls();
 game.playRound();
-setTimeout(()=>{
-    game.drawPlayerCards();
-    game.drawTableCards(); 
-},1000 / 20);
+
+
+
 
 
 
