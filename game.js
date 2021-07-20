@@ -1,37 +1,87 @@
 class Game {
-  constructor(canvas, player, enemy1, enemy2) {
+  constructor(canvas, screens) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
-    this.player = player;
-    this.enemy1 = enemy1;
-    this.enemy2 = enemy2;
+    this.screens = screens;
+  }
+
+  displayScreen(name) {
+    const screenThatShouldBeDisplayed = this.screens[name];
+    const screensThatShouldBeHidden = Object.values(this.screens).filter(
+      (screen) => screen !== screenThatShouldBeDisplayed
+    );
+    screenThatShouldBeDisplayed.style.display = '';
+    for (const screen of screensThatShouldBeHidden)
+      screen.style.display = 'none';
   }
 
   start() {
+    console.log('BEGIN OF THE GAME');
+    this.player = 'Me';
+    this.enemy1 = 'Peter';
+    this.enemy2 = 'Mary';
+    console.log(this.player);
+    console.log('enemy1');
+    console.log(this.enemy1);
+    console.log('enemy2');
+    console.log(this.enemy2);
     this.playerCardPlayed = [];
+    for (let i = 0; i < this.playerCardPlayed.length; i++) {
+      this.playerCardPlayed.shift();
+      console.log('inside loopcleaningplayer');
+    }
+    console.log('this.playerCardPlayed');
+    console.log(this.playerCardPlayed);
     this.enemy1CardPlayed = [];
+    for (let i = 0; i < this.enemy1CardPlayed.length; i++) {
+      this.enemy1CardPlayed.shift();
+      console.log('inside loopcleaningenemy1');
+    }
+    console.log('this.enemy1CardPlayed');
+    console.log(this.enemy1CardPlayed);
     this.enemy2CardPlayed = [];
+    for (let i = 0; i < this.enemy2CardPlayed.length; i++) {
+      this.enemy2CardPlayed.shift();
+      console.log('inside loopcleaningenemy2');
+    }
+    console.log('this.enemy2CardPlayed');
+    console.log(this.enemy2CardPlayed);
     this.tableCards = [
       this.playerCardPlayed,
       this.enemy1CardPlayed,
       this.enemy2CardPlayed
     ];
+    console.log('tableCards');
+    console.log(this.tableCards);
     this.playerToPlay = this.player;
     this.roundSuit = [];
     this.gameRunning = true;
     this.distributeCards();
     this.randomPlayer();
     this.enableControls();
+    this.displayScreen('playing');
+    console.log('player');
+    console.log(this.player);
+    console.log('enemy1');
+    console.log(this.enemy1);
+    console.log('enemy2');
+    console.log(this.enemy2);
+    debugger;
     this.loop();
   }
 
   loop() {
-    if (this.gameRunning) {
-      this.playRound();
-      this.paint();
-      window.requestAnimationFrame(() => {
-        this.loop();
-      });
+    switch (this.gameRunning) {
+      case true:
+        this.playRound();
+        this.paint();
+        window.requestAnimationFrame(() => {
+          this.loop();
+        });
+        break;
+      case false:
+        this.displayScreen('gameOver');
+        break;
     }
   }
 
@@ -47,11 +97,25 @@ class Game {
   }
 
   distributeCards() {
+    console.log('distributeCards');
+    console.log('player');
+    console.log(this.player);
+    console.log('enemy1');
+    console.log(this.enemy1);
+    console.log('enemy2');
+    console.log(this.enemy2);
     //create the player and the 2 enemies
     this.player = new Player(this, `${this.player}`);
     this.enemy1 = new Enemy(this, `${this.enemy1}`);
     this.enemy2 = new Enemy(this, `${this.enemy2}`);
+    console.log('player');
+    console.log(this.player);
+    console.log('enemy1');
+    console.log(this.enemy1);
+    console.log('enemy2');
+    console.log(this.enemy2);
     //create all the cards of the game
+    console.log('allCards');
     const allCards = [];
     for (const suit of ['clover', 'diamond', 'spade', 'heart']) {
       for (const value of ['1', '3', '4', '5', '6', '7', 'J', 'Q', 'K']) {
@@ -99,6 +163,8 @@ class Game {
         allCards.push(card);
       }
     }
+    console.log('allCards');
+    console.log(allCards);
     //shuffle all the cards
     allCards.sort(() => (Math.random() > 0.5 ? 1 : -1));
     for (const cardsOfThePlayers of [this.player, this.enemy1, this.enemy2]) {
@@ -120,6 +186,12 @@ class Game {
           break;
       }
     }
+    console.log('player');
+    console.log(this.player);
+    console.log('enemy1');
+    console.log(this.enemy1);
+    console.log('enemy2');
+    console.log(this.enemy2);
     //Order cards of the player
     //Order by suit
     this.player.cards.sort(function (a, b) {
@@ -148,6 +220,13 @@ class Game {
         }
       }
     }
+    console.log('player');
+    console.log(this.player);
+    console.log('enemy1');
+    console.log(this.enemy1);
+    console.log('enemy2');
+    console.log(this.enemy2);
+    console.log('end of distributeCards method');
   } // end of distributeCards method
 
   randomPlayer() {
@@ -411,7 +490,7 @@ class Game {
     if (this.player.cards.length == 0) {
       this.gameRunning = false;
       console.log(`the game is never over`);
-      debugger;
+      //debugger;
     }
     console.log('endofplayerWinsRound');
   }
@@ -447,7 +526,7 @@ class Game {
     if (this.player.cards.length == 0) {
       this.gameRunning = false;
       console.log(`the game is never over`);
-      debugger;
+      //debugger;
     }
   }
   //enemy2 wins the round points added to score, table cards cleared, enemy2 set to start next round
@@ -482,7 +561,7 @@ class Game {
     if (this.player.cards.length == 0) {
       this.gameRunning = false;
       console.log(`the game is never over`);
-      debugger;
+      //debugger;
     }
   }
 

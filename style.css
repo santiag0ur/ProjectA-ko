@@ -1,0 +1,38 @@
+html,
+body {
+  height: 100%;
+  background-color: brown;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+canvas {
+  background-color: darkgoldenrod;
+}
+
+.screen {
+  width: 500px;
+  height: 500px;
+  border: 5px solid darkred;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  font-size: 4em;
+}
+
+button {
+  font: inherit;
+  color: rgb(206, 74, 13);
+  padding: 1em;
+  appearance: none;
+  border: 2px solid rgb(128, 58, 0);
+  background-color: transparent;
+  font-weight: bold;
+}

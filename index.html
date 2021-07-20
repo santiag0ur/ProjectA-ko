@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>repl.it</title>
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <canvas id="canvasmain" width="500" height="500"></canvas>
+    <div class="screen" id="screen-start">
+      <h1>Brisca</h1>
+      <h2 id="playername">Me</h2>
+      <h2 id="enemy1name">peter</h2>
+      <h2 id="enemy2name">mary</h2>
+      <button>Start Game</button>
+    </div>
+    <div class="screen" id="screen-playing" style="display: none">
+      <canvas id="canvasmain" width="500" height="500"></canvas>
+    </div>
+    <div class="screen" id="screen-game-over" style="display: none">
+      <h3>Game Over</h3>
+      <button>Try Again</button>
+    </div>
     <script src="cards.js"></script>
     <script src="enemy.js"></script>
     <script src="player.js"></script>

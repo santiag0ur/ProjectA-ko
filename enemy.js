@@ -13,14 +13,22 @@ class Enemy {
     console.log(this.cards);
     switch (this.name) {
       case game.enemy1.name:
+        console.log('game.enemy1CardPlayed');
+        console.log(game.enemy1CardPlayed);
         game.enemy1CardPlayed.push(
           this.cards.splice((Math.random() * this.cards.length) << 0, 1)
         );
+        console.log('game.enemy1CardPlayed');
+        console.log(game.enemy1CardPlayed);
         break;
       case game.enemy2.name:
+        console.log('game.enemy2CardPlayed');
+        console.log(game.enemy2CardPlayed);
         game.enemy2CardPlayed.push(
           this.cards.splice((Math.random() * this.cards.length) << 0, 1)
         );
+        console.log('game.enemy2CardPlayed');
+        console.log(game.enemy2CardPlayed[0]);
         break;
     }
     console.log('tableCards: ');
