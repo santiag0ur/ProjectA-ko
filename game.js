@@ -18,6 +18,7 @@ class Game {
     ];
     this.playerToPlay = this.player;
     this.roundSuit = [];
+    this.gameRunning = true;
     this.distributeCards();
     this.randomPlayer();
     this.enableControls();
@@ -25,15 +26,13 @@ class Game {
   }
 
   loop() {
-    this.runLogic();
-    this.paint();
-    window.requestAnimationFrame(() => {
-      this.loop();
-    });
-  }
-
-  runLogic() {
-    this.playRound();
+    if (this.gameRunning) {
+      this.playRound();
+      this.paint();
+      window.requestAnimationFrame(() => {
+        this.loop();
+      });
+    }
   }
 
   paint() {
@@ -103,8 +102,22 @@ class Game {
     //shuffle all the cards
     allCards.sort(() => (Math.random() > 0.5 ? 1 : -1));
     for (const cardsOfThePlayers of [this.player, this.enemy1, this.enemy2]) {
-      for (let i = 0; i < 12; i++) {
-        cardsOfThePlayers.cards.push(allCards[i]);
+      switch (cardsOfThePlayers) {
+        case this.player:
+          for (let i = 0; i < 12; i++) {
+            cardsOfThePlayers.cards.push(allCards[i]);
+          }
+          break;
+        case this.enemy1:
+          for (let i = 12; i < 24; i++) {
+            cardsOfThePlayers.cards.push(allCards[i]);
+          }
+          break;
+        case this.enemy2:
+          for (let i = 24; i < 36; i++) {
+            cardsOfThePlayers.cards.push(allCards[i]);
+          }
+          break;
       }
     }
     //Order cards of the player
@@ -206,7 +219,7 @@ class Game {
       this.displaySelectedCard();
     }
   }
-
+  //play the round between the played cards, who wins?
   roundWinner() {
     //the first one who plays stablish the winner suit (roundSuit)
     console.log('playerToPlay');
@@ -223,6 +236,7 @@ class Game {
         break;
     }
     //First check if played card is from the winner suit, then compare weights
+    //debugger;
     console.log('roundSuit');
     console.log(this.roundSuit);
     switch (this.playerCardPlayed[0][0].suit == this.roundSuit) {
@@ -380,9 +394,9 @@ class Game {
       this.player.score = this.player.score + this.tableCards[i][0][0].points;
       this.player.cardsWon.push(this.tableCards[i]);
     }
-    this.playerCardPlayed = [];
-    this.enemy1CardPlayed = [];
-    this.enemy2CardPlayed = [];
+    this.playerCardPlayed.shift();
+    this.enemy1CardPlayed.shift();
+    this.enemy2CardPlayed.shift();
     console.log('playercardsWon');
     console.log(this.player.cardsWon);
     console.log('tableCards');
@@ -394,6 +408,11 @@ class Game {
     console.log(this.playerToPlay);
     this.clearScore();
     this.drawScore();
+    if (this.player.cards.length == 0) {
+      this.gameRunning = false;
+      console.log(`the game is never over`);
+      debugger;
+    }
     console.log('endofplayerWinsRound');
   }
   //enemy1 wins the round points added to score, table cards cleared, enemy1 set to start next round
@@ -411,9 +430,9 @@ class Game {
       this.enemy1.score = this.enemy1.score + this.tableCards[i][0][0].points;
       this.enemy1.cardsWon.push(this.tableCards[i]);
     }
-    this.playerCardPlayed = [];
-    this.enemy1CardPlayed = [];
-    this.enemy2CardPlayed = [];
+    this.playerCardPlayed.shift();
+    this.enemy1CardPlayed.shift();
+    this.enemy2CardPlayed.shift();
     console.log('enemy1cardsWon');
     console.log(this.enemy1.cardsWon);
     console.log('tableCards');
@@ -425,6 +444,11 @@ class Game {
     console.log(this.playerToPlay);
     this.clearScore();
     this.drawScore();
+    if (this.player.cards.length == 0) {
+      this.gameRunning = false;
+      console.log(`the game is never over`);
+      debugger;
+    }
   }
   //enemy2 wins the round points added to score, table cards cleared, enemy2 set to start next round
   enemy2WinsRound() {
@@ -441,9 +465,9 @@ class Game {
       this.enemy2.score = this.enemy2.score + this.tableCards[i][0][0].points;
       this.enemy2.cardsWon.push(this.tableCards[i]);
     }
-    this.playerCardPlayed = [];
-    this.enemy1CardPlayed = [];
-    this.enemy2CardPlayed = [];
+    this.playerCardPlayed.shift();
+    this.enemy1CardPlayed.shift();
+    this.enemy2CardPlayed.shift();
     console.log('enemy2cardsWon');
     console.log(this.enemy2.cardsWon);
     console.log('tableCards');
@@ -455,6 +479,11 @@ class Game {
     console.log(this.playerToPlay);
     this.clearScore();
     this.drawScore();
+    if (this.player.cards.length == 0) {
+      this.gameRunning = false;
+      console.log(`the game is never over`);
+      debugger;
+    }
   }
 
   drawPlayerCards() {
@@ -568,7 +597,6 @@ class Game {
       this.context.closePath();
     }, 1000 / 140);
   }
-  //play the round between the played cards, who wins?
 
   drawScore() {
     this.context.font = '20px sans-serif';
