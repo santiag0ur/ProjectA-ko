@@ -35,4 +35,5 @@ button {
   border: 2px solid rgb(128, 58, 0);
   background-color: transparent;
   font-weight: bold;
+  margin: 1em;
 }

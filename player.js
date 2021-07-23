@@ -4,12 +4,13 @@ class Player {
     this.name = name;
     this.cards = [];
     this.cardSelected = 0;
-    this.cardsWon = [];
+    //this.cardsWon = [];
     this.score = 0;
   }
+
   paintCards() {
     //display cards player
-    console.log('this.player.paintCards()');
+    //console.log('this.player.paintCards()');
     let pointerForDraw = this.cards.length - 1;
     while (pointerForDraw >= 0) {
       let testimg = new Image();
@@ -27,6 +28,7 @@ class Player {
       pointerForDraw--;
     }
   }
+
   hi() {
     console.log('playerHI');
     console.log(`${this.name} cards before playing: `);
@@ -50,6 +52,13 @@ class Player {
     }
     //drawing again the cards after playing, call to decide who wins the round
     //this.game.paint();
-    this.game.roundWinner();
+    setTimeout(() => {
+      this.game.drawTableCards();
+    }, 1000 / 280);
+    function callbackToTheRoundWinner() {
+      console.log('callbackToTheRoundWinner');
+      game.roundWinner();
+    }
+    const timeoutWatchCards = setTimeout(callbackToTheRoundWinner, 5000);
   }
 }
