@@ -14,10 +14,18 @@ const screenElements = {
   gameOver: screenGameOverElement
 };
 
-const game = new Game(canvas, canvasend, screenElements);
 const playername = 'Me';
 const enemy1name = 'Peter';
 const enemy2name = 'Mary';
+
+const game = new Game(
+  canvas,
+  canvasend,
+  screenElements,
+  playername,
+  enemy1name,
+  enemy2name
+);
 
 const startButton = screenStartElement.querySelector('button');
 const tryAgainButton = screenGameOverElement.querySelector('button');

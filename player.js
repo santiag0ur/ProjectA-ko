@@ -4,13 +4,11 @@ class Player {
     this.name = name;
     this.cards = [];
     this.cardSelected = 0;
-    //this.cardsWon = [];
     this.score = 0;
   }
 
   paintCards() {
     //display cards player
-    //console.log('this.player.paintCards()');
     let pointerForDraw = this.cards.length - 1;
     while (pointerForDraw >= 0) {
       let testimg = new Image();
@@ -30,14 +28,7 @@ class Player {
   }
 
   hi() {
-    console.log('playerHI');
-    console.log(`${this.name} cards before playing: `);
-    console.log(this.cards);
     game.playerCardPlayed.push(this.cards.splice(this.cardSelected, 1));
-    console.log('tableCards: ');
-    console.log(this.game.tableCards);
-    console.log(`${this.name} cards after playing: `);
-    console.log(this.cards);
     //after playing the card if there are more players to play the ai of the enemies is called
     switch (this.game.playerToPlay) {
       case this.game.player:
@@ -51,12 +42,11 @@ class Player {
         break;
     }
     //drawing again the cards after playing, call to decide who wins the round
-    //this.game.paint();
+    //delay after playing the cards so the human player can see the cards played
     setTimeout(() => {
       this.game.drawTableCards();
     }, 1000 / 280);
     function callbackToTheRoundWinner() {
-      console.log('callbackToTheRoundWinner');
       game.roundWinner();
     }
     const timeoutWatchCards = setTimeout(callbackToTheRoundWinner, 5000);

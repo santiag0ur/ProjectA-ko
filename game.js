@@ -1,10 +1,13 @@
 class Game {
-  constructor(canvas, canvasend, screens) {
+  constructor(canvas, canvasend, screens, player, enemy1, enemy2) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
     this.screens = screens;
     this.canvasend;
     this.contextend = canvasend.getContext('2d');
+    this.player = player;
+    this.enemy1 = enemy1;
+    this.enemy2 = enemy2;
   }
 
   displayScreen(name) {
@@ -18,236 +21,185 @@ class Game {
   }
 
   start() {
-    console.log('BEGIN OF THE GAME');
-    this.player = 'Me';
-    this.enemy1 = 'Peter';
-    this.enemy2 = 'Mary';
-    console.log(this.player);
-    console.log('enemy1');
-    console.log(this.enemy1);
-    console.log('enemy2');
-    console.log(this.enemy2);
-    this.playerCardPlayed = [];
+    //start method
+    this.playerCardPlayed = []; //Arrays for played cards, if the game is restarted we clean the array
     for (let i = 0; i < this.playerCardPlayed.length; i++) {
       this.playerCardPlayed.shift();
     }
-    console.log('this.playerCardPlayed');
-    console.log(this.playerCardPlayed);
     this.enemy1CardPlayed = [];
     for (let i = 0; i < this.enemy1CardPlayed.length; i++) {
       this.enemy1CardPlayed.shift();
     }
-    console.log('this.enemy1CardPlayed');
-    console.log(this.enemy1CardPlayed);
     this.enemy2CardPlayed = [];
     for (let i = 0; i < this.enemy2CardPlayed.length; i++) {
       this.enemy2CardPlayed.shift();
     }
-    console.log('this.enemy2CardPlayed');
-    console.log(this.enemy2CardPlayed);
     this.tableCards = [
+      //tablecards are the 3 cards played
       this.playerCardPlayed,
       this.enemy1CardPlayed,
       this.enemy2CardPlayed
     ];
-    console.log('tableCards');
-    console.log(this.tableCards);
-    this.cardsAlreadyPlayed = [];
-    this.playerToPlay = this.player;
-    this.roundSuit = [];
-    this.winner = '';
-    this.textForTheEnd = '';
-    this.stepForNextRound = true;
-    this.gameRunning = true;
-    this.distributeCards();
-    this.randomPlayer();
-    this.enableControls();
-    this.displayScreen('playing');
-    console.log('player');
-    console.log(this.player);
-    console.log('enemy1');
-    console.log(this.enemy1);
-    console.log('enemy2');
-    console.log(this.enemy2);
-    //debugger;
-    this.loop();
+    this.cardsAlreadyPlayed = []; //cards played in previous rounds
+    this.playerToPlay = this.player; //player that starts the round
+    this.roundSuit = []; //the suit that wins this round, stablish by the one who plays 1st
+    this.winner = ''; //winner of the game
+    this.textForTheEnd = ''; //text that will be shown at the end of the game
+    this.stepForNextRound = true; //boolean to prevent start another round before human player turn finishes
+    this.gameRunning = true; //boolean for loop the game until there are no more cards
+    this.distributeCards(); //calling method for distribute cards between the players
+    this.randomPlayer(); //select a random player to start the game
+    this.enableControls(); //enable keyboard for playing
+    this.displayScreen('playing'); //show the screen for playing
+    this.loop(); //start loop of the game
   }
 
   loop() {
     switch (this.gameRunning) {
-      case true:
-        this.playRound();
-        this.paint();
+      case true: //check if there are any cards left for playing
+        this.playRound(); //call for playing the round
+        this.paint(); //paint all the elements of the screen
         window.requestAnimationFrame(() => {
           this.loop();
         });
         break;
-      case false:
+      case false: //game has end, it is selected the text depending on the winner
         this.contextend.font = '20px sans-serif';
-        //this.contextend.textAlign = 'center';
-        console.log('gameRunningfalse');
         switch (this.player.score == this.enemy1.score) {
           case false:
-            console.log('this.player.score = this.enemy1.score false');
             switch (this.player.score > this.enemy1.score) {
               case true:
-                console.log('bigger than enemy1');
                 switch (this.player.score == this.enemy2.score) {
                   case false:
                     switch (this.player.score > this.enemy2.score) {
-                      case true:
-                        console.log(
-                          `Congratulations! ${this.player.name} wins`
-                        );
+                      case true: //human player wins
                         this.contextend.fillText(
                           `Congratulations! ${this.player.name} wins`,
                           100,
                           50
                         );
+                        this.drawfinalScore();
                         break;
-                      case false:
-                        console.log(`You lose! :( ${this.enemy2.name} wins`);
+                      case false: //enemy2 wins
                         this.contextend.fillText(
                           `You lose! :( ${this.enemy2.name} wins`,
                           100,
                           50
                         );
+                        this.drawfinalScore();
                         break;
                     }
                     break;
-                  case true:
-                    console.log(
-                      `Draw! ${this.player.name} and ${this.enemy2.name}with same points!!!`
-                    );
+                  case true: //draw between human player and enemy2
                     this.contextend.font = '15px sans-serif';
                     this.contextend.fillText(
                       `Draw! ${this.player.name} and ${this.enemy2.name}with same points!!!`,
                       100,
                       50
                     );
+                    this.drawfinalScore();
                     break;
                 }
                 break;
               case false:
-                console.log('less than enemy1');
                 switch (this.enemy1.score == this.enemy2.score) {
                   case false:
                     switch (this.enemy1.score > this.enemy2.score) {
-                      case true:
-                        console.log(`You lose! :( ${this.enemy1.name} wins`);
+                      case true: //enemy1 wins
                         this.contextend.font = '20px sans-serif';
                         this.contextend.fillText(
                           `You lose! :( ${this.enemy1.name} wins`,
                           100,
                           50
                         );
+                        this.drawfinalScore();
                         break;
-                      case false:
-                        console.log(`You lose! :( ${this.enemy2.name} wins`);
+                      case false: //enemy2 wins
                         this.contextend.fillText(
                           `You lose! :( ${this.enemy2.name} wins`,
                           100,
                           50
                         );
+                        this.drawfinalScore();
                         break;
                     }
                     break;
-                  case true:
-                    console.log(
-                      `You lose! :( Draw! ${this.enemy1.name} and ${this.enemy2.name}with same points!!!`
-                    );
+                  case true: //draw between enemy1 and enemy2
                     this.contextend.font = '12px sans-serif';
                     this.contextend.fillText(
                       `You lose! :( Draw! ${this.enemy1.name} and ${this.enemy2.name}with same points!!!`,
                       100,
                       50
                     );
+                    this.drawfinalScore();
                     break;
                 }
                 break;
             }
             break;
           case true:
-            console.log('this.player.score = this.enemy1.score true');
             switch (this.player.score == this.enemy2.score) {
               case false:
-                console.log('this.player.score = this.enemy2.score false');
                 switch (this.player.score > this.enemy2.score) {
-                  case true:
-                    console.log(
-                      `Draw! ${this.player.name} and ${this.enemy1.name}with same points!!!`
-                    );
+                  case true: //draw betwenn human player and enemy1
                     this.contextend.font = '12px sans-serif';
                     this.contextend.fillText(
                       `Draw! ${this.player.name} and ${this.enemy1.name}with same points!!!`,
                       100,
                       50
                     );
+                    this.drawfinalScore();
                     break;
-                  case false:
-                    console.log(`You lose! :( ${this.enemy2.name} wins`);
+                  case false: //enemy2 wins
                     this.contextend.font = '20px sans-serif';
                     this.contextend.fillText(
                       `You lose! :( ${this.enemy2.name} wins`,
                       100,
                       50
                     );
+                    this.drawfinalScore();
                     break;
                 }
                 break;
-              case true:
-                console.log('this.player.score = this.enemy2.score true');
-                console.log('Draw! 3 players with same points!!!');
+              case true: //Draw between 3 players
                 this.contextend.font = '18px sans-serif';
                 this.contextend.fillText(
                   'Draw! 3 players with same points!!!',
                   100,
                   50
                 );
+                this.drawfinalScore();
                 break;
             }
             break;
         }
-        this.displayScreen('gameOver');
+        this.displayScreen('gameOver'); //After selecting the text we call game over screen
         break;
     }
   }
 
   paint() {
-    //    console.log('game.paint()');
     setTimeout(() => {
       this.clearScreen();
-    }, 1000 / 480);
-    this.drawPlayerCards();
-    this.drawTableCards();
-    this.drawScore();
-    this.displaySelectedCard();
+    }, 1000 / 480); //screen is cleared faster than drawings
+    setTimeout(() => {
+      this.drawPlayerCards(); //cards of 3 players drawn
+      this.drawTableCards(); //cards played drawn
+      this.clearScore();
+      this.drawScore(); //scores drawn
+    }, 1000 / 320); //drawings end after clearing
+    this.displaySelectedCard(); //selector card of human player
   }
 
   distributeCards() {
-    console.log('distributeCards');
-    console.log('player');
-    console.log(this.player);
-    console.log('enemy1');
-    console.log(this.enemy1);
-    console.log('enemy2');
-    console.log(this.enemy2);
     //create the player and the 2 enemies
     this.player = new Player(this, `${this.player}`);
     this.enemy1 = new Enemy(this, `${this.enemy1}`);
     this.enemy2 = new Enemy(this, `${this.enemy2}`);
-    //    console.log('player');
-    //    console.log(this.player);
-    //    console.log('enemy1');
-    //    console.log(this.enemy1);
-    //    console.log('enemy2');
-    //    console.log(this.enemy2);
-    //create all the cards of the game
-    //    console.log('allCards');
-    const allCards = [];
+    const allCards = []; //create allCards array
     for (const suit of ['clover', 'diamond', 'spade', 'heart']) {
       for (const value of ['1', '3', '4', '5', '6', '7', 'J', 'Q', 'K']) {
-        let weight = 0;
+        let weight = 0; //loops for provide suit, value, weight and points
         let points = 0;
         switch (value) {
           case '1':
@@ -286,42 +238,33 @@ class Game {
             weight = 1;
             points = 0;
             break;
-        }
+        } //creation of each card
         const card = new Card(this, suit, value, weight, points);
         allCards.push(card);
       }
     }
-    //    console.log('allCards');
-    //    console.log(allCards);
-    //shuffle all the cards
+    //Shuffle all the cards
     allCards.sort(() => (Math.random() > 0.5 ? 1 : -1));
     for (const cardsOfThePlayers of [this.player, this.enemy1, this.enemy2]) {
       switch (cardsOfThePlayers) {
-        case this.player:
+        case this.player: //first 12 cards for human player
           for (let i = 0; i < 12; i++) {
             cardsOfThePlayers.cards.push(allCards[i]);
           }
           break;
-        case this.enemy1:
+        case this.enemy1: //cards from 12 to 24 to enemy1
           for (let i = 12; i < 24; i++) {
             cardsOfThePlayers.cards.push(allCards[i]);
           }
           break;
-        case this.enemy2:
+        case this.enemy2: //last 12 cards for enemy2
           for (let i = 24; i < 36; i++) {
             cardsOfThePlayers.cards.push(allCards[i]);
           }
           break;
       }
     }
-    //    console.log('player');
-    //    console.log(this.player);
-    //    console.log('enemy1');
-    //    console.log(this.enemy1);
-    //    console.log('enemy2');
-    //    console.log(this.enemy2);
-    //Order cards of the player
-    //Order by suit
+    //Order cards of the player by suit
     this.player.cards.sort(function (a, b) {
       var suitA = a.suit;
       var suitB = b.suit;
@@ -335,7 +278,7 @@ class Game {
         return 0;
       }
     });
-    //Order by weight
+    //Order player cards by weight
     for (let o = 0; o < 9; o++) {
       for (let i = 0; i < 11; i++) {
         if (this.player.cards[i].suit == this.player.cards[i + 1].suit) {
@@ -348,26 +291,21 @@ class Game {
         }
       }
     }
-    console.log('player');
-    console.log(this.player);
-    console.log('enemy1');
-    console.log(this.enemy1);
-    console.log('enemy2');
-    console.log(this.enemy2);
-    console.log('end of distributeCards method');
-  } // end of distributeCards method
+  } // End of distributeCards method
 
   randomPlayer() {
+    //Select a random player to start the game
     const groupOfPlayers = [this.player, this.enemy1, this.enemy2];
     this.playerToPlay = groupOfPlayers[(Math.random() * 3) << 0];
-    console.log(`PlayerToPlay = ${this.playerToPlay.name}`);
-    console.log(this.playerToPlay);
   }
-  //depending on the player to play some ai are called,
+
   playRound() {
+    //Start the round
     if (this.stepForNextRound) {
-      console.log('insideplayRound player.cards = enemy1.cards');
-      switch (this.playerToPlay) {
+      //If previous human turn isn´t ended do not play
+      switch (
+        this.playerToPlay //Depending on the player who starts the round some ai are called,
+      ) {
         case this.player:
           this.stepForNextRound = false;
           this.displaySelectedCard();
@@ -388,18 +326,13 @@ class Game {
   }
 
   enableControls() {
+    //Enable keys right, left and space
     window.addEventListener('keydown', (event) => {
       const key = event.code;
       switch (key) {
-        case 'ArrowUp':
-          console.log('arrowup');
-          break;
         case 'ArrowRight':
           console.log('arrowright');
           this.moveRight();
-          break;
-        case 'ArrowDown':
-          console.log('arrowdown');
           break;
         case 'ArrowLeft':
           console.log('arrowleft');
@@ -414,27 +347,24 @@ class Game {
   }
 
   moveLeft() {
+    //if selected card is 0 don´t move further left
     if (this.player.cardSelected != 0) {
       this.player.cardSelected--;
-      //      console.log(this.player.cardSelected);
       this.displaySelectedCard();
     }
   }
 
   moveRight() {
-    //    console.log(`moveright`);
-    //    console.log(this.player.cardSelected);
+    //if selected card is in the last card don´t move further right
     if (this.player.cardSelected != this.player.cards.length - 1) {
       this.player.cardSelected++;
-      //      console.log(this.player.cardSelected);
       this.displaySelectedCard();
     }
   }
-  //play the round between the played cards, who wins?
+
   roundWinner() {
+    //play the round between the played cards, who wins?
     //the first one who plays stablish the winner suit (roundSuit)
-    console.log('playerToPlay');
-    console.log(this.playerToPlay);
     switch (this.playerToPlay) {
       case this.player:
         this.roundSuit = this.playerCardPlayed[0][0].suit;
@@ -447,142 +377,109 @@ class Game {
         break;
     }
     //First check if played card is from the winner suit, then compare weights
-    //debugger;
-    console.log('roundSuit');
-    console.log(this.roundSuit);
     switch (this.playerCardPlayed[0][0].suit == this.roundSuit) {
       case true:
-        console.log('playerOKroundsuit');
         switch (this.enemy1CardPlayed[0][0].suit == this.roundSuit) {
           case true:
-            console.log('enemy1OKroundsuit');
             switch (this.enemy2CardPlayed[0][0].suit == this.roundSuit) {
               case true:
-                console.log('enemy2OKrounsuit');
                 switch (
                   this.playerCardPlayed[0][0].weight >
                   this.enemy1CardPlayed[0][0].weight
                 ) {
                   case true:
-                    console.log('playerHigherthanenemy1');
                     switch (
                       this.playerCardPlayed[0][0].weight >
                       this.enemy2CardPlayed[0][0].weight
                     ) {
                       case true:
-                        console.log('playerwins');
                         this.playerWinsRound();
                         break;
                       case false:
-                        console.log('enemy2wins');
                         this.enemy2WinsRound();
                         break;
                     }
                     break;
                   case false:
-                    console.log('enemy1Higherthanplayer');
                     switch (
                       this.enemy1CardPlayed[0][0].weight >
                       this.enemy2CardPlayed[0][0].weight
                     ) {
                       case true:
-                        console.log('enemy1wins');
                         this.enemy1WinsRound();
                         break;
                       case false:
-                        console.log('enemy2wins');
                         this.enemy2WinsRound();
                         break;
                     }
                     break;
                 }
                 break;
-              case false:
-                console.log('enemy2NOTrounsuit');
+              case false: //enemy2 not roundsuit
                 switch (
                   this.playerCardPlayed[0][0].weight >
                   this.enemy1CardPlayed[0][0].weight
                 ) {
                   case true:
-                    console.log('playerwins');
                     this.playerWinsRound();
                     break;
                   case false:
-                    console.log('enemy1wins');
                     this.enemy1WinsRound();
                     break;
                 }
                 break;
             }
             break;
-          case false:
-            console.log('enemy1NOTroundsuit');
+          case false: //enemy1 not roundsuit
             switch (this.enemy2CardPlayed[0][0].suit == this.roundSuit) {
               case true:
-                console.log('enemy2OKrounsuit');
                 switch (
                   this.playerCardPlayed[0][0].weight >
                   this.enemy2CardPlayed[0][0].weight
                 ) {
                   case true:
-                    console.log('playerwins');
                     this.playerWinsRound();
                     break;
                   case false:
-                    console.log('enemy2wins');
                     this.enemy2WinsRound();
                     break;
                 }
                 break;
-              case false:
-                console.log('enemy2NOTrounsuit');
-                console.log('playerwins');
+              case false: //enemy2 not roundsuit
                 this.playerWinsRound();
                 break;
             }
             break;
         }
         break;
-      case false:
-        console.log('playerNOTroundsuit');
+      case false: //player not roundsuit
         switch (this.enemy1CardPlayed[0][0].suit == this.roundSuit) {
           case true:
-            console.log('enemy1OKroundsuit');
             switch (this.enemy2CardPlayed[0][0].suit == this.roundSuit) {
               case true:
-                console.log('enemy2OKrounsuit');
                 switch (
                   this.enemy1CardPlayed[0][0].weight >
                   this.enemy2CardPlayed[0][0].weight
                 ) {
                   case true:
-                    console.log('enemy1wins');
                     this.enemy1WinsRound();
                     break;
                   case false:
-                    console.log('enemy2wins');
                     this.enemy2WinsRound();
                     break;
                     break;
                 }
               case false:
-                console.log('enemy2NOTrounsuit');
-                console.log('enemy1wins');
                 this.enemy1WinsRound();
                 break;
             }
             break;
-          case false:
-            console.log('enemy1NOTroundsuit');
+          case false: //enemy1 not roundsuit
             switch (this.enemy2CardPlayed[0][0].suit == this.roundSuit) {
               case true:
-                console.log('enemy2OKrounsuit');
-                console.log('enemy2wins');
                 this.enemy2WinsRound();
                 break;
-              case false:
-                console.log('enemy2NOTrounsuit');
-                console.log('thisisimpossible');
+              case false: //This case is impossible 3 players do not match roundsuit
                 break;
             }
             break;
@@ -590,146 +487,81 @@ class Game {
         break;
     }
   } //end of roundWinner
-  //player wins the round points added to score, table cards cleared, player set to start next round
+
   playerWinsRound() {
-    console.log('playerWinsRound');
-    console.log('cardsAlreadyPlayed');
-    console.log(this.cardsAlreadyPlayed);
-    console.log('tableCards');
-    console.log(this.tableCards);
-    console.log('playerscore');
-    console.log(this.player.score);
-    console.log('this.tableCards[0][0][0].points');
-    console.log(this.tableCards[0][0][0].points);
-    console.log('this.tableCards[1][0][0].points');
-    console.log(this.tableCards[1][0][0].points);
-    console.log('this.tableCards[2][0][0].points');
-    console.log(this.tableCards[2][0][0].points);
+    //player wins the round,
     for (let i = 0; i < 3; i++) {
-      this.player.score = this.player.score + this.tableCards[i][0][0].points;
-      this.cardsAlreadyPlayed.push(this.tableCards[i][0]);
+      this.player.score = this.player.score + this.tableCards[i][0][0].points; //Points added to score
+      this.cardsAlreadyPlayed.push(this.tableCards[i][0]); //Tablecards to cardsAlreadyPlayed
     }
-    this.playerCardPlayed.shift();
+    this.playerCardPlayed.shift(); //Clear all the arrays of played cards
     this.enemy1CardPlayed.shift();
     this.enemy2CardPlayed.shift();
-    console.log('cardsAlreadyPlayed');
-    console.log(this.cardsAlreadyPlayed);
-    console.log('tableCards');
-    console.log(this.tableCards);
-    console.log('playerscore');
-    console.log(this.player.score);
-    this.playerToPlay = this.player;
-    console.log('playerToPlay');
-    console.log(this.playerToPlay);
+    this.playerToPlay = this.player; //Next round starts human player
     this.clearScore();
-    this.drawScore();
+    this.drawScore(); //draw new score
     if (this.player.cards.length == 0) {
+      //if there are no more cards the game is ended
       this.gameRunning = false;
-      console.log(`the game is never over`);
-      //debugger;
     }
-    console.log('endofplayerWinsRound');
-    this.stepForNextRound = true;
+    this.stepForNextRound = true; //it is allowed to go for the next round
   }
-  //enemy1 wins the round points added to score, table cards cleared, enemy1 set to start next round
+
   enemy1WinsRound() {
-    console.log('enemy1WinsRound');
-    console.log('cardsAlreadyPlayed');
-    console.log(this.cardsAlreadyPlayed);
-    console.log('tableCards');
-    console.log(this.tableCards);
-    console.log('enemy1score');
-    console.log(this.enemy1.score);
-    console.log('this.tableCards[0][0][0].points');
-    console.log(this.tableCards[0][0][0].points);
-    console.log('this.tableCards[1][0][0].points');
-    console.log(this.tableCards[1][0][0].points);
-    console.log('this.tableCards[2][0][0].points');
-    console.log(this.tableCards[2][0][0].points);
+    //enemy1 wins the round
     for (let i = 0; i < 3; i++) {
-      this.enemy1.score = this.enemy1.score + this.tableCards[i][0][0].points;
+      this.enemy1.score = this.enemy1.score + this.tableCards[i][0][0].points; //points added to score,
       this.cardsAlreadyPlayed.push(this.tableCards[i][0]);
     }
-    this.playerCardPlayed.shift();
+    this.playerCardPlayed.shift(); //table cards cleared,
     this.enemy1CardPlayed.shift();
     this.enemy2CardPlayed.shift();
-    console.log('cardsAlreadyPlayed');
-    console.log(this.cardsAlreadyPlayed);
-    console.log('tableCards');
-    console.log(this.tableCards);
-    console.log('enemy1score');
-    console.log(this.enemy1.score);
-    this.playerToPlay = this.enemy1;
-    console.log('playerToPlay');
-    console.log(this.playerToPlay);
+    this.playerToPlay = this.enemy1; //enemy1 set to start next round
     this.clearScore();
     this.drawScore();
     if (this.player.cards.length == 0) {
-      this.gameRunning = false;
-      console.log(`the game is never over`);
-      //debugger;
+      this.gameRunning = false; //if there are no more cards the game is ended
     }
-    console.log('endofenemy1WinsRound');
-    this.stepForNextRound = true;
+    this.stepForNextRound = true; //it is allowed to go for the next round
   }
-  //enemy2 wins the round points added to score, table cards cleared, enemy2 set to start next round
+
   enemy2WinsRound() {
-    console.log('enemy2WinsRound');
-    console.log('cardsAlreadyPlayed');
-    console.log(this.cardsAlreadyPlayed);
-    console.log('tableCards');
-    console.log(this.tableCards);
-    console.log('enemy2score');
-    console.log(this.enemy2.score);
-    console.log('this.tableCards[0][0][0].points');
-    console.log(this.tableCards[0][0][0].points);
-    console.log('this.tableCards[1][0][0].points');
-    console.log(this.tableCards[1][0][0].points);
-    console.log('this.tableCards[2][0][0].points');
-    console.log(this.tableCards[2][0][0].points);
+    //enemy2 wins the round
     for (let i = 0; i < 3; i++) {
-      this.enemy2.score = this.enemy2.score + this.tableCards[i][0][0].points;
+      this.enemy2.score = this.enemy2.score + this.tableCards[i][0][0].points; //points added to score,
       this.cardsAlreadyPlayed.push(this.tableCards[i][0]);
     }
-    this.playerCardPlayed.shift();
+    this.playerCardPlayed.shift(); //table cards cleared,
     this.enemy1CardPlayed.shift();
     this.enemy2CardPlayed.shift();
-    console.log('cardsAlreadyPlayed');
-    console.log(this.cardsAlreadyPlayed);
-    console.log('tableCards');
-    console.log(this.tableCards);
-    console.log('enemy2score');
-    console.log(this.enemy2.score);
-    this.playerToPlay = this.enemy2;
-    console.log('playerToPlay');
-    console.log(this.playerToPlay);
+    this.playerToPlay = this.enemy2; //enemy2 set to start next round
     this.clearScore();
     this.drawScore();
     if (this.player.cards.length == 0) {
-      this.gameRunning = false;
-      console.log(`the game is never over`);
-      //debugger;
+      this.gameRunning = false; //if there are no more cards the game is ended
     }
-    console.log('endofenemy2WinsRound');
-    this.stepForNextRound = true;
+    this.stepForNextRound = true; //it is allowed to go for the next round
   }
 
   drawPlayerCards() {
-    this.player.paintCards();
+    this.player.paintCards(); //call for display cards of human player
     //display cards enemy1
-    //console.log(`enemy1cards-1 = ${this.enemy1.cards.length - 1}`);
     let pointerForDraw = this.enemy1.cards.length - 1;
     while (pointerForDraw >= 0) {
       let testimg = new Image();
       let o = pointerForDraw * 35;
-      testimg.src = `${this.enemy1.cards[pointerForDraw].urlImageCardHorizontal}`;
+      // testimg.src = `${this.enemy1.cards[pointerForDraw].urlImageCardHorizontal}`;      //For drawing the cards of enemy1
+      testimg.src = './images/horizontal/card-back1.png'; //disable this line for drawing cards of enemy1
+      //enemy1charges horizontal images
       testimg.addEventListener('load', () => {
         context.drawImage(
           testimg,
           20,
           o,
-          testimg.width / 1.4,
-          testimg.height / 1.4
+          //testimg.width / 1.4,    //Proportions for drawing the cards of enemy1
+          //testimg.height / 1.4
+          testimg.width / 2.4, //disable these two lines for drawing cards of enemy1
+          testimg.height / 2.2
         );
       });
       pointerForDraw--;
@@ -739,19 +571,21 @@ class Game {
     while (pointerForDraw >= 0) {
       let testimg = new Image();
       let o = pointerForDraw * 34 + 83;
-      testimg.src = `${this.enemy2.cards[pointerForDraw].urlImageCard}`;
+      // testimg.src = `${this.enemy2.cards[pointerForDraw].urlImageCard}`;             //For drawing the cards of the enemy2
+      testimg.src = './images/card-back1.png'; //disable this line for drawing cards of enemy2
       testimg.addEventListener('load', () => {
         context.drawImage(
           testimg,
           o,
           20,
-          testimg.width / 1.4,
-          testimg.height / 1.4
+          //testimg.width / 1.4,    //Proportions for drawing the cards of enemy2
+          //testimg.height / 1.4
+          testimg.width / 2.2, //disable these two lines for drawing cards of enemy2
+          testimg.height / 2.4
         );
       });
       pointerForDraw--;
     }
-    //console.log('end of drawPlayerCards method');
   } // end of drawPlayerCards method
 
   clearScreen() {
@@ -760,6 +594,7 @@ class Game {
 
   drawTableCards() {
     if (this.playerCardPlayed[0] !== undefined) {
+      //check card played for human player
       let testimg0 = new Image();
       testimg0.src = `${this.playerCardPlayed[0][0].urlImageCard}`;
       testimg0.addEventListener('load', () => {
@@ -773,6 +608,7 @@ class Game {
       });
     }
     if (this.enemy1CardPlayed[0] !== undefined) {
+      //check card played for enemy1
       let testimg1 = new Image();
       testimg1.src = `${this.enemy1CardPlayed[0][0].urlImageCard}`;
       testimg1.addEventListener('load', () => {
@@ -786,6 +622,7 @@ class Game {
       });
     }
     if (this.enemy2CardPlayed[0] !== undefined) {
+      //check card played for enemy2
       let testimg2 = new Image();
       testimg2.src = `${this.enemy2CardPlayed[0][0].urlImageCard}`;
       testimg2.addEventListener('load', () => {
@@ -802,16 +639,6 @@ class Game {
 
   //draw red rectangle around selected card
   displaySelectedCard() {
-    //console.log('displaySelectedCard');
-    setTimeout(() => {
-      game.clearScreen();
-    }, 1000 / 480);
-    setTimeout(() => {
-      this.drawPlayerCards();
-      this.drawTableCards();
-      this.clearScore();
-      this.drawScore();
-    }, 1000 / 320);
     setTimeout(() => {
       this.context.lineWidth = 3;
       this.context.strokeStyle = 'red';
@@ -823,7 +650,7 @@ class Game {
       this.context.lineTo(30 + this.player.cardSelected * 40, 439);
       this.context.stroke();
       this.context.closePath();
-    }, 1000 / 140);
+    }, 1000 / 140); //ends after drawing the cards
   }
 
   drawScore() {
@@ -848,5 +675,24 @@ class Game {
     context.clearRect(350, 405, canvas.width, 415);
     context.clearRect(100, 125, canvas.width, 130);
     context.clearRect(350, 80, canvas.width, 100);
+  }
+
+  drawfinalScore() {
+    this.contextend.font = '15px sans-serif';
+    this.contextend.fillText(
+      `${this.player.name} --- ${this.player.score}points`,
+      100,
+      100
+    );
+    this.contextend.fillText(
+      `${this.enemy1.name} --- ${this.enemy1.score}points`,
+      100,
+      120
+    );
+    this.contextend.fillText(
+      `${this.enemy2.name} --- ${this.enemy2.score}points`,
+      100,
+      140
+    );
   }
 } // end of Game class
