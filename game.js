@@ -640,6 +640,12 @@ class Game {
   //draw red rectangle around selected card
   displaySelectedCard() {
     setTimeout(() => {
+      this.drawPlayerCards(); //cards of 3 players drawn
+      this.drawTableCards(); //cards played drawn
+      this.clearScore();
+      this.drawScore(); //scores drawn
+    }, 1000 / 320); //drawings end after clearing
+    setTimeout(() => {
       this.context.lineWidth = 3;
       this.context.strokeStyle = 'red';
       this.context.beginPath();
