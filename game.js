@@ -181,16 +181,16 @@ class Game {
   paint() {
     setTimeout(() => {
       this.clearScreen();
-    }, 1000 / 480); //screen is cleared faster than drawings
+    }, 1000 / 960); //screen is cleared faster than drawings
     setTimeout(() => {
       this.drawPlayerCards(); //cards of 3 players drawn
       this.drawTableCards(); //cards played drawn
       this.clearScore();
       this.drawScore(); //scores drawn
-    }, 1000 / 320); //drawings end after clearing
+    }, 1000 / 620); //drawings end after clearing
     setTimeout(() => {
       this.displaySelectedCard(); //selector card of human player
-    }, 1000 / 140);
+    }, 1000 / 280);
   }
 
   distributeCards() {
