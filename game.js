@@ -180,17 +180,19 @@ class Game {
 
   paint() {
     setTimeout(() => {
+      //setTimeout(() => {
       this.clearScreen();
-    }, 1000 / 1920); //screen is cleared faster than drawings
-    setTimeout(() => {
+      // }, 1000 / 1920); //screen is cleared faster than drawings
+      //setTimeout(() => {
       this.drawPlayerCards(); //cards of 3 players drawn
       this.drawTableCards(); //cards played drawn
       this.clearScore();
       this.drawScore(); //scores drawn
-    }, 1000 / 1240); //drawings end after clearing
+    }, 1000 / 400); //drawings end after clearing
     setTimeout(() => {
       this.displaySelectedCard(); //selector card of human player
-    }, 1000 / 560);
+      //}, 1000 / 560);
+    }, 1000 / 100);
   }
 
   distributeCards() {
