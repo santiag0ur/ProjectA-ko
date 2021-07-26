@@ -189,7 +189,7 @@ class Game {
       this.drawTableCards(); //cards played drawn
       this.clearScore();
       this.drawScore(); //scores drawn
-    }, 1000 / 100); //drawings end after clearing
+    }, 1000 / 200); //drawings end after clearing
     setTimeout(() => {
       this.displaySelectedCard(); //selector card of human player
       //}, 1000 / 560);
