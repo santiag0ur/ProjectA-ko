@@ -51,6 +51,7 @@ class Game {
     this.randomPlayer(); //select a random player to start the game
     this.enableControls(); //enable keyboard for playing
     this.displayScreen('playing'); //show the screen for playing
+    this.paint();
     this.loop(); //start loop of the game
   }
 
