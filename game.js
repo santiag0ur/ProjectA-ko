@@ -188,7 +188,9 @@ class Game {
       this.clearScore();
       this.drawScore(); //scores drawn
     }, 1000 / 320); //drawings end after clearing
-    this.displaySelectedCard(); //selector card of human player
+    setTimeout(() => {
+      this.displaySelectedCard(); //selector card of human player
+    }, 1000 / 140);
   }
 
   distributeCards() {
@@ -639,24 +641,17 @@ class Game {
 
   //draw red rectangle around selected card
   displaySelectedCard() {
-    setTimeout(() => {
-      this.drawPlayerCards(); //cards of 3 players drawn
-      this.drawTableCards(); //cards played drawn
-      this.clearScore();
-      this.drawScore(); //scores drawn
-    }, 1000 / 320); //drawings end after clearing
-    setTimeout(() => {
-      this.context.lineWidth = 3;
-      this.context.strokeStyle = 'red';
-      this.context.beginPath();
-      this.context.moveTo(30 + this.player.cardSelected * 40, 440);
-      this.context.lineTo(73 + this.player.cardSelected * 40, 440);
-      this.context.lineTo(73 + this.player.cardSelected * 40, 499);
-      this.context.lineTo(30 + this.player.cardSelected * 40, 499);
-      this.context.lineTo(30 + this.player.cardSelected * 40, 439);
-      this.context.stroke();
-      this.context.closePath();
-    }, 1000 / 140); //ends after drawing the cards
+    this.context.lineWidth = 3;
+    this.context.strokeStyle = 'red';
+    this.context.beginPath();
+    this.context.moveTo(30 + this.player.cardSelected * 40, 440);
+    this.context.lineTo(73 + this.player.cardSelected * 40, 440);
+    this.context.lineTo(73 + this.player.cardSelected * 40, 499);
+    this.context.lineTo(30 + this.player.cardSelected * 40, 499);
+    this.context.lineTo(30 + this.player.cardSelected * 40, 439);
+    this.context.stroke();
+    this.context.closePath();
+    //ends after drawing the cards
   }
 
   drawScore() {
