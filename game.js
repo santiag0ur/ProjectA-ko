@@ -180,19 +180,19 @@ class Game {
 
   paint() {
     //setTimeout(() => {
-    //setTimeout(() => {
-    //this.clearScreen();
-    // }, 1000 / 1920); //screen is cleared faster than drawings
-    //setTimeout(() => {
-    this.drawPlayerCards(); //cards of 3 players drawn
-    this.drawTableCards(); //cards played drawn
-    this.clearScore();
-    this.drawScore(); //scores drawn
-    //}, 1000 / 100); //drawings end after clearing
-    //setTimeout(() => {
-    this.displaySelectedCard(); //selector card of human player
-    //}, 1000 / 560);
-    //}, 1000 / 75);
+    setTimeout(() => {
+      this.clearScreen();
+      // }, 1000 / 1920); //screen is cleared faster than drawings
+      //setTimeout(() => {
+      this.drawPlayerCards(); //cards of 3 players drawn
+      this.drawTableCards(); //cards played drawn
+      this.clearScore();
+      this.drawScore(); //scores drawn
+    }, 1000 / 100); //drawings end after clearing
+    setTimeout(() => {
+      this.displaySelectedCard(); //selector card of human player
+      //}, 1000 / 560);
+    }, 1000 / 75);
   }
 
   distributeCards() {
@@ -312,18 +312,18 @@ class Game {
       ) {
         case this.player:
           this.stepForNextRound = false;
-          this.displaySelectedCard();
+          //          this.displaySelectedCard();
           break;
         case this.enemy1:
           this.stepForNextRound = false;
           this.enemy1.ai();
-          this.displaySelectedCard();
+          //          this.displaySelectedCard();
           break;
         case this.enemy2:
           this.stepForNextRound = false;
           this.enemy2.ai();
           this.enemy1.ai();
-          this.displaySelectedCard();
+          //          this.displaySelectedCard();
           break;
       }
     }
@@ -354,7 +354,7 @@ class Game {
     //if selected card is 0 don´t move further left
     if (this.player.cardSelected != 0) {
       this.player.cardSelected--;
-      this.displaySelectedCard();
+      //      this.displaySelectedCard();
     }
   }
 
@@ -362,7 +362,7 @@ class Game {
     //if selected card is in the last card don´t move further right
     if (this.player.cardSelected != this.player.cards.length - 1) {
       this.player.cardSelected++;
-      this.displaySelectedCard();
+      //      this.displaySelectedCard();
     }
   }
 
@@ -502,8 +502,8 @@ class Game {
     this.enemy1CardPlayed.shift();
     this.enemy2CardPlayed.shift();
     this.playerToPlay = this.player; //Next round starts human player
-    this.clearScore();
-    this.drawScore(); //draw new score
+    //    this.clearScore();
+    //    this.drawScore(); //draw new score
     if (this.player.cards.length == 0) {
       //if there are no more cards the game is ended
       this.gameRunning = false;
@@ -521,8 +521,8 @@ class Game {
     this.enemy1CardPlayed.shift();
     this.enemy2CardPlayed.shift();
     this.playerToPlay = this.enemy1; //enemy1 set to start next round
-    this.clearScore();
-    this.drawScore();
+    //    this.clearScore();
+    //    this.drawScore();
     if (this.player.cards.length == 0) {
       this.gameRunning = false; //if there are no more cards the game is ended
     }
@@ -539,8 +539,8 @@ class Game {
     this.enemy1CardPlayed.shift();
     this.enemy2CardPlayed.shift();
     this.playerToPlay = this.enemy2; //enemy2 set to start next round
-    this.clearScore();
-    this.drawScore();
+    //    this.clearScore();
+    //    this.drawScore();
     if (this.player.cards.length == 0) {
       this.gameRunning = false; //if there are no more cards the game is ended
     }
