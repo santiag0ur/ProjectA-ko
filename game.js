@@ -58,7 +58,7 @@ class Game {
     switch (this.gameRunning) {
       case true: //check if there are any cards left for playing
         this.playRound(); //call for playing the round
-        this.paint(); //paint all the elements of the screen
+        //    this.paint(); //paint all the elements of the screen
         window.requestAnimationFrame(() => {
           this.loop();
         });
@@ -317,12 +317,14 @@ class Game {
         case this.enemy1:
           this.stepForNextRound = false;
           this.enemy1.ai();
+          this.paint();
           //          this.displaySelectedCard();
           break;
         case this.enemy2:
           this.stepForNextRound = false;
           this.enemy2.ai();
           this.enemy1.ai();
+          this.paint();
           //          this.displaySelectedCard();
           break;
       }
@@ -354,6 +356,7 @@ class Game {
     //if selected card is 0 don´t move further left
     if (this.player.cardSelected != 0) {
       this.player.cardSelected--;
+      this.paint();
       //      this.displaySelectedCard();
     }
   }
@@ -362,6 +365,7 @@ class Game {
     //if selected card is in the last card don´t move further right
     if (this.player.cardSelected != this.player.cards.length - 1) {
       this.player.cardSelected++;
+      this.paint();
       //      this.displaySelectedCard();
     }
   }
@@ -509,6 +513,7 @@ class Game {
       this.gameRunning = false;
     }
     this.stepForNextRound = true; //it is allowed to go for the next round
+    this.paint();
   }
 
   enemy1WinsRound() {
@@ -527,6 +532,7 @@ class Game {
       this.gameRunning = false; //if there are no more cards the game is ended
     }
     this.stepForNextRound = true; //it is allowed to go for the next round
+    this.paint();
   }
 
   enemy2WinsRound() {
@@ -545,6 +551,7 @@ class Game {
       this.gameRunning = false; //if there are no more cards the game is ended
     }
     this.stepForNextRound = true; //it is allowed to go for the next round
+    this.paint();
   }
 
   drawPlayerCards() {
